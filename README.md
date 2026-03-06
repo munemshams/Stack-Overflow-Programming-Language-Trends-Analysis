@@ -87,7 +87,7 @@ Several insights emerged from the analysis:
 |-----|-------------|
 | `stack_overflow_language_trends.Rmd` | R Markdown notebook containing the full analysis |
 | `stack_overflow_language_trends.html` | Knitted HTML output of the analysis |
-| `stack_overflow_language_trends_report.docx` | Written report summarizing the analysis |
+| `stack_overflow_language_trends_report.pdf` | Written report summarizing the analysis |
 | `stack_overflow_data.csv` | Dataset used for the analysis |
 | `visuals/` | Folder containing generated charts and visualizations |
 | `README.md` | Project documentation |
