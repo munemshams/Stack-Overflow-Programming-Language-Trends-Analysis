@@ -1,0 +1,138 @@
+---
+title: "Stack Overflow Programming Language Trends Analysis"
+author: "Munem Shahriar Shams"
+output:
+  word_document: default
+  html_document: default
+---
+
+---
+title: "Stack Overflow Programming Language Trends Analysis"
+author: "Munem Shahriar Shams"
+output: html_document
+---
+
+#Loading Libraries
+
+```{r loading libraries}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(scales)
+```
+
+#Loading the dataset
+
+```{r loading dataset}
+data <- read_csv("stack_overflow_data.csv")
+
+head(data)
+```
+
+
+# Data Preparation
+
+To compare languages across years, we calculate the percentage of total questions associated with each tag. This allows us to measure relative popularity rather than raw counts.
+
+
+```{r calculate_percentages}
+data_percentage <- data %>%
+  mutate(
+    percentage = (num_questions / year_total) * 100
+  )
+```
+
+# Trend Analysis: R Programming Language
+
+We first examine how the popularity of the **R programming language** has evolved over time.
+
+```{r filter_r_language}
+r_over_time <- data_percentage %>%
+  filter(tag == "r")
+```
+
+
+## Visualization: R Popularity Over Time
+
+The following chart shows how the percentage of Stack Overflow questions tagged with **R** has changed over time.
+
+```{r plot_r_trend}
+ggplot(r_over_time, aes(x = year, y = percentage)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  geom_point(color = "steelblue") +
+  labs(
+    title = "Popularity of R on Stack Overflow",
+    x = "Year",
+    y = "Percentage of Questions"
+  ) +
+  theme_minimal()
+```
+
+# R Popularity in 2020
+
+Next we extract the statistics for the year 2020 to determine the share of Stack Overflow questions related to R.
+
+```{r r_2020_results}
+r_2020 <- r_over_time %>%
+  filter(year == 2020)
+
+r_2020
+```
+
+# Identify Most Popular Programming Languages
+
+Next we determine which programming languages received the highest number of questions between 2015 and 2020.
+
+```{r calculate_top_languages}
+sorted_tags <- data %>%
+  filter(year >= 2015 & year <= 2020) %>%
+  group_by(tag) %>%
+  summarise(tag_total = sum(num_questions), .groups = "drop") %>%
+  arrange(desc(tag_total))
+```
+
+```{r extract_top5_languages}
+highest_tags <- sorted_tags %>%
+  slice_head(n = 5)
+
+highest_tags
+```
+
+# Visualization: Popular Programming Languages
+
+Finally, we visualize how the most popular programming languages have evolved over time.
+
+```{r prepare_top_language_data}
+top_tags <- highest_tags$tag
+
+data_subset <- data_percentage %>%
+  filter(tag %in% top_tags, year >= 2015)
+```
+
+```{r plot_language_trends}
+ggplot(data_subset, aes(x = year, y = percentage, color = tag)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  labs(
+    title = "Popularity Trends of Top Programming Languages (2015–2020)",
+    x = "Year",
+    y = "Percentage of Questions",
+    color = "Language"
+  ) +
+  theme_minimal()
+```
+
+# Key Insights
+
+Several insights emerge from this analysis:
+
+- Stack Overflow question data provides a strong indicator of developer interest in programming languages.
+- R shows steady growth due to its importance in data science and analytics.
+- A small group of programming languages dominates most Stack Overflow discussions.
+- Observing trends over time helps identify emerging technologies and declining tools.
+
+# Conclusion
+
+Stack Overflow question data offers a valuable perspective on programming language popularity. By analyzing tagged questions over time, we can observe how developer interest evolves across technologies.
+
+These insights can help developers and organizations decide which programming languages to focus on learning and adopting.
